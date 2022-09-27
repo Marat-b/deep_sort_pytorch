@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 import time
 
 import numpy as np
@@ -17,6 +18,7 @@ parser.add_argument("--gpu-id",default=0,type=int)
 parser.add_argument("--lr",default=0.1, type=float)
 parser.add_argument("--interval",'-i',default=20,type=int)
 parser.add_argument('--resume', '-r',action='store_true')
+parser.add_argument("--out-dir",dest='outdir',type=str, required=True)
 args = parser.parse_args()
 
 # device
@@ -25,6 +27,7 @@ if torch.cuda.is_available() and not args.no_cuda:
     cudnn.benchmark = True
 
 # data loading
+outdir = args.outdir
 root = args.data_dir
 train_dir = os.path.join(root,"train")
 test_dir = os.path.join(root,"test")
@@ -48,6 +51,7 @@ testloader = torch.utils.data.DataLoader(
     batch_size=64,shuffle=True
 )
 num_classes = max(len(trainloader.dataset.classes), len(testloader.dataset.classes))
+print(f'num_classes={num_classes}')
 
 # net definition
 start_epoch = 0
@@ -142,6 +146,8 @@ def test(epoch):
         if not os.path.isdir('checkpoint'):
             os.mkdir('checkpoint')
         torch.save(checkpoint, './checkpoint/ckpt.t7')
+        shutil.copy('./checkpoint/ckpt.t7', os.path.join(outdir, 'ckpt.t7'))
+        print('ckpt.t7 is saved...')
 
     return test_loss/len(testloader), 1.- correct/total
 
@@ -167,6 +173,7 @@ def draw_curve(epoch, train_loss, train_err, test_loss, test_err):
         ax0.legend()
         ax1.legend()
     fig.savefig("train.jpg")
+    shutil.copy('train.jpg', os.path.join(outdir, 'train.jpg'))
 
 # lr decay
 def lr_decay():
