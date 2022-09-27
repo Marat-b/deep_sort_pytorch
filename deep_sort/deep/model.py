@@ -67,7 +67,8 @@ class Net(nn.Module):
         # 128 16 8
         self.layer4 = make_layers(256,512,2,True)
         # 256 8 4
-        self.avgpool = nn.AvgPool2d((8,4),1)
+        # self.avgpool = nn.AvgPool2d((8,4),1)
+        self.adaptiveavgpool = nn.AdaptiveAvgPool2d(1)
         # 256 1 1 
         self.reid = reid
         self.classifier = nn.Sequential(
@@ -84,7 +85,8 @@ class Net(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
-        x = self.avgpool(x)
+        # x = self.avgpool(x)
+        x = self.adaptiveavgpool(x)
         x = x.view(x.size(0),-1)
         # B x 128
         if self.reid:

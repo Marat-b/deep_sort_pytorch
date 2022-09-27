@@ -32,13 +32,14 @@ root = args.data_dir
 train_dir = os.path.join(root,"train")
 test_dir = os.path.join(root,"test")
 transform_train = torchvision.transforms.Compose([
-    torchvision.transforms.RandomCrop((128,64),padding=4),
+    torchvision.transforms.Resize((128,128)),
+    torchvision.transforms.RandomCrop((128,128),padding=4),
     torchvision.transforms.RandomHorizontalFlip(),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 transform_test = torchvision.transforms.Compose([
-    torchvision.transforms.Resize((128,64)),
+    torchvision.transforms.Resize((128,128)),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
