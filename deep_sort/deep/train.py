@@ -1,5 +1,6 @@
 import argparse
 import os
+import random
 import shutil
 import time
 
@@ -8,6 +9,7 @@ import matplotlib.pyplot as plt
 import torch
 import torch.backends.cudnn as cudnn
 import torchvision
+import torchvision.transforms as T
 
 from model import Net
 
@@ -32,14 +34,25 @@ root = args.data_dir
 train_dir = os.path.join(root,"train")
 test_dir = os.path.join(root,"test")
 transform_train = torchvision.transforms.Compose([
-    torchvision.transforms.Resize((128,128)),
+    # torchvision.transforms.Resize((128,128)),
+    torchvision.transforms.RandomApply([
+    torchvision.transforms.ColorJitter(brightness=random.choice([0,.1,.3,.5]),
+                        contrast=random.choice([0,.1,.3,.5]),
+                        # hue=random.choice([0.1,.3,.5]),
+                        saturation=random.choice([0,.1,.3,.5])
+                        ),
+    T.RandomPerspective(distortion_scale=random.choice([.1,.3,.5,.7,.9]), p=0.9),
+    T.RandomResizedCrop(128, scale=(random.choice([0.1,0.2,0.3]), random.choice([0.5,0.7,0.9,1.1,1.3,1.5])),
+                              ratio=(random.choice([0.3,0.5,0.7]),random.choice ([1.1,1.3,1.7,1.9]))),
+    T.GaussianBlur(random.choice([1,3,5,7]), sigma=(0.1,10.0))
+    ], p=0.5),
     # torchvision.transforms.RandomCrop((128,128),padding=4),
     # torchvision.transforms.RandomHorizontalFlip(),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 transform_test = torchvision.transforms.Compose([
-    torchvision.transforms.Resize((128,128)),
+    # torchvision.transforms.Resize((128,128)),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
