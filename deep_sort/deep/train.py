@@ -34,7 +34,7 @@ root = args.data_dir
 train_dir = os.path.join(root,"train")
 test_dir = os.path.join(root,"test")
 transform_train = torchvision.transforms.Compose([
-    # torchvision.transforms.Resize((128,128)),
+    torchvision.transforms.Resize((128,128)),
     torchvision.transforms.RandomApply([
     torchvision.transforms.ColorJitter(brightness=random.choice([0,.1,.3,.5]),
                         contrast=random.choice([0,.1,.3,.5]),
@@ -52,7 +52,7 @@ transform_train = torchvision.transforms.Compose([
     torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 transform_test = torchvision.transforms.Compose([
-    # torchvision.transforms.Resize((128,128)),
+    torchvision.transforms.Resize((128,128)),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
