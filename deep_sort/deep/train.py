@@ -21,6 +21,8 @@ parser.add_argument("--lr",default=0.1, type=float)
 parser.add_argument("--interval",'-i',default=20,type=int)
 parser.add_argument('--resume', '-r',action='store_true')
 parser.add_argument("--out-dir",dest='outdir',type=str, required=True)
+parser.add_argument("-w","--width",default=128, type=int)
+parser.add_argument("-h","--height",default=128, type=int)
 args = parser.parse_args()
 
 # device
@@ -33,26 +35,29 @@ outdir = args.outdir
 root = args.data_dir
 train_dir = os.path.join(root,"train")
 test_dir = os.path.join(root,"test")
+height = args.height
+width = args.width
 transform_train = torchvision.transforms.Compose([
-    torchvision.transforms.Resize((128,128)),
+    torchvision.transforms.Resize((width,height)),
     torchvision.transforms.RandomApply([
-    torchvision.transforms.ColorJitter(brightness=random.choice([0,.1,.3,.5]),
-                        contrast=random.choice([0,.1,.3,.5]),
-                        # hue=random.choice([0.1,.3,.5]),
-                        saturation=random.choice([0,.1,.3,.5])
-                        ),
-    T.RandomPerspective(distortion_scale=random.choice([.1,.3,.5,.7,.9]), p=0.9),
-    T.RandomResizedCrop(128, scale=(random.choice([0.1,0.2,0.3]), random.choice([0.5,0.7,0.9,1.1,1.3,1.5])),
+    # torchvision.transforms.ColorJitter(brightness=random.choice([0,.1,.3,.5]),
+    #                     contrast=random.choice([0,.1,.3,.5]),
+    #                     # hue=random.choice([0.1,.3,.5]),
+    #                     saturation=random.choice([0,.1,.3,.5])
+    #                     ),
+    # T.RandomPerspective(distortion_scale=random.choice([.1,.3,.5,.7,.9]), p=0.9),
+    T.RandomResizedCrop(width, scale=(random.choice([0.1,0.2,0.3]), random.choice([0.5,0.7,0.9,1.1,1.3,1.5])),
                               ratio=(random.choice([0.3,0.5,0.7]),random.choice ([1.1,1.3,1.7,1.9]))),
-    T.GaussianBlur(random.choice([1,3,5,7]), sigma=(0.1,10.0))
-    ], p=0.5),
+    # T.GaussianBlur(random.choice([1,3,5,7]), sigma=(0.1,10.0))
+    ], p=0.3),
+    T.RandomRotation([0, 380]),
     # torchvision.transforms.RandomCrop((128,128),padding=4),
     # torchvision.transforms.RandomHorizontalFlip(),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 transform_test = torchvision.transforms.Compose([
-    torchvision.transforms.Resize((128,128)),
+    torchvision.transforms.Resize((width,height)),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
