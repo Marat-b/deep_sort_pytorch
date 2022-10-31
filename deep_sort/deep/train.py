@@ -22,7 +22,7 @@ parser.add_argument("--interval",'-i',default=20,type=int)
 parser.add_argument('--resume', '-r',action='store_true')
 parser.add_argument("--out-dir",dest='outdir',type=str, required=True)
 parser.add_argument("-w","--width",default=128, type=int)
-parser.add_argument("-h","--height",default=128, type=int)
+parser.add_argument("-he","--height",default=128, type=int)
 args = parser.parse_args()
 
 # device
